@@ -1,0 +1,22 @@
+{
+  "name": "enquete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/riek123/enquete.git"
+  },
+  "author": "amin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/riek123/enquete/issues"
+  },
+  "homepage": "https://github.com/riek123/enquete#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
