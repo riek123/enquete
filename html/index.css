@@ -9,3 +9,10 @@ body {
     text-align:center;
     padding:5px;
 }
+.vragen {
+    margin:20px;
+}
+.antwoorden {
+    margin-right:10px;
+    margin-top:2px;
+}
