@@ -41,29 +41,39 @@
 	<div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
-		<h1>Enquete over snelweg in woerden.</h1>
+		<h1 id="enqueteTitel"></h1>
 		</div>
 		<div class="col-md-2"></div>
 	</div>
-	<div id="vragen" class="row vragen">
+	<div id="vragenlijst"></div>
+	<div class="row">
 		<div class="col-md-1"></div>
-		<h5 class="col-md-5">
-			Wat vindt u van de snelweg die wordt aangelegd in Woerden?
-		</h5>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Prima</button>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Slecht</button>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Geen mening</button>
-		<div class="col-md-3"></div>
+		<div class="col-md-7">
+			<div>
+				<input type="text" class="form-control" id="nieuweVraag" placeholder="Plaats je vraag hier">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<button class="btn btn-default" onclick="slaNieuweVraagOp()" type="button">Opslaan</button>
+		</div>
+		<div class="col-md-1"></div>
 	</div>
-	<div id="vragen2" class="row vragen">
-		<div class="col-md-1"></div>
-		<h5 class="col-md-5">
-			Wat vindt u van een boete voor het bellen op de fiets?
-		</h5>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Onzin</button>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Mee eens</button>
-			<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="" type="button">Geen mening</button>
-		<div class="col-md-3"></div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 id="vraagTitel" class="modal-title"></h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" id="nieuwAntwoord" placeholder="Plaats je antwoord hier">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+				<button type="button" class="btn btn-primary" onclick="slaAntwoordOp()">Opslaan</button>
+			</div>
+		</div>
 	</div>
 </div>
 </body>
