@@ -10,6 +10,8 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="js/enquete.js"></script>
+	<script src="js/taartdiagram.js"></script>
+	<script src="//d3js.org/d3.v3.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -41,7 +43,7 @@
 	<div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
-		<h1 id="enqueteTitel"></h1>
+		<h1 id="enqueteTitel" style="margin-bottom: 20px"></h1>
 		</div>
 		<div class="col-md-2"></div>
 	</div>
@@ -63,15 +65,15 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="close" data-dismiss="modal" onclick="antwoordLeegmaken()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 id="vraagTitel" class="modal-title"></h4>
 			</div>
 			<div class="modal-body">
 				<input type="text" class="form-control" id="nieuwAntwoord" placeholder="Plaats je antwoord hier">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-				<button type="button" class="btn btn-primary" onclick="slaAntwoordOp()">Opslaan</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"  onclick="antwoordLeegmaken()">Sluiten</button>
+				<button type="button" class="btn btn-primary" onclick="slaAntwoordOp()" data-dismiss="modal">Opslaan</button>
 			</div>
 		</div>
 	</div>

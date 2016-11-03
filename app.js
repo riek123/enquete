@@ -62,5 +62,46 @@ app.post('/nieuwAntwoord/:enqueteId/:vraagId', function(req, res)
         })
         res.end();
     });
+app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
+{
+    console.log(req.body);
+    console.log("enquete = ", req.params.enqueteId);
+    console.log("vraag = ", req.params.vraagId);
+    console.log("antwoord = ", req.params.antwoordCode);
+    var antwoord = req.body;
+    lijstEnquetes
+    .filter(function(enquete)
+    {
+        return enquete.id == req.params.enqueteId;
+    })
+    .forEach(function(enquete)
+    {
+        enquete.vragenlijst
+        .filter(function(vraag)
+        {
+            return vraag.id == req.params.vraagId;
+        })
+        .forEach(function(vraag)
+        {
+            vraag.antwoordenlijst
+            .filter(function(antwoord)
+            {
+                return antwoord.code == req.params.antwoordCode;
+            })
+            .forEach(function(antwoord)
+            {
+                if (antwoord.teller){
+                antwoord.teller++
+                }
+                else
+                {
+                antwoord.teller = 1
+                }
+            })
+        })
+    })
+    res.end();
+})
+
 
 app.listen(3000, function() { console.log('programma is gestart');});
