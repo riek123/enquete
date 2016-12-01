@@ -1,7 +1,7 @@
 $(document).ready(laadEnqueteLijst);
 var enqueteMap={};
 var enqueteId;
-var geselecteerdeVraag;
+var geselecteerdeVraagId;
  function laadEnqueteLijst() {
  $.getJSON("http://localhost:3000/api", function(result){
          $("#enqueteLijst").empty();
@@ -22,7 +22,6 @@ var geselecteerdeVraag;
  {
  var objectOmTeVesturen = {};
  objectOmTeVesturen.naam = $('#naamEnquete').val();
- console.log("aan het opslaan");
      $.ajax({
          cache: false,
          type: 'POST',
@@ -45,7 +44,6 @@ var geselecteerdeVraag;
 
  function selecteerEnquete(id)
  {
-    console.log("Hij werkt." + id);
     $("#enqueteTitel").html(enqueteMap[id].naam);
     enqueteId=id;
      $("#vragenlijst").empty();
@@ -56,10 +54,8 @@ var geselecteerdeVraag;
 
  function slaNieuweVraagOp()
  {
-    console.log("Je hebt op de knop gedrukt.");
     var objectOmTeVesturen = {};
      objectOmTeVesturen.beschrijving = $('#nieuweVraag').val();
-     console.log("aan het opslaan");
          $.ajax({
              cache: false,
              type: 'POST',
@@ -79,23 +75,25 @@ var geselecteerdeVraag;
              contentType: "application/json"
          });
  }
- function selecteerVraag(vraag,id)
+ function selecteerVraag(id)
  {
-    $("#vraagTitel").text(vraag)
-    geselecteerdeVraag=id
+     console.log(JSON.stringify(enqueteMap[enqueteId]));
+    $("#vraagTitel").text(enqueteMap[enqueteId].vragenlijst[id].beschrijving);
+
+    geselecteerdeVraagId = id;
  }
  function printVragenlijst(enquete)
  {
      $.each(enquete.vragenlijst, function(i, vraag){
-     geselecteerdeVraag = vraag;
+     // geselecteerdeVraag = vraag;
         $("#vragenlijst")
         .append('<div class="row vragen">' +
-        '<div class="col-md-1"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'' + vraag.beschrijving + '\', \'' + vraag.id + '\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>' +
+        '<div class="col-md-1"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'' + vraag.id + '\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>' +
         '<h5 class="col-md-5">' +
         vraag.beschrijving +
         '</h5>' +
-        printAntwoorden(vraag.antwoordenlijst) +
-        '<div class="col-md-3" style="height: 100px; width: 100px; margin-top: -35px" id="diagram-' + enquete.id + '-' + vraag.id + '"></div>' +
+        printAntwoorden(vraag.id, vraag.antwoordenlijst) +
+        '<div class="col-md-3" style="height: 125px; width: 100px; margin-top: -35px" id="diagram-' + enquete.id + '-' + vraag.id + '"></div>' +
         '</div>')
         id="#diagram-" + enquete.id + "-" + vraag.id;
                 console.log("hallo",id)
@@ -111,25 +109,21 @@ var geselecteerdeVraag;
         })
         return data;
  }
- function printAntwoorden(antwoordenlijst)
+ function printAntwoorden(vraagId, antwoordenlijst)
  {
     var alleKnoppen = "";
     $.each(antwoordenlijst, function(i, antwoord){
-        console.log(antwoord.beschrijving)
         if (!antwoord.teller)
         {
             antwoord.teller = 0
         }
-        var antwoordKnop = '<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="kiesAntwoord(\''+ antwoord.code + '\')" type="button">' + antwoord.beschrijving + ' </button>'
+        var antwoordKnop = '<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="kiesAntwoord(\''+ vraagId + '\',\'' + antwoord.code + '\')" type="button">' + antwoord.beschrijving + ' (' + antwoord.teller + ')</button>'
     alleKnoppen = alleKnoppen + antwoordKnop;
     })
     return alleKnoppen
  }
  function slaAntwoordOp()
  {
-    console.log("geselecteerde enquete " + enqueteId)
-    console.log("geselecteerde vraag " + geselecteerdeVraag.id)
-    console.log($("#nieuwAntwoord").val())
         var objectOmTeVesturen = {};
          objectOmTeVesturen.beschrijving = $('#nieuwAntwoord').val();
          objectOmTeVesturen.code = $('#nieuwAntwoord').val();
@@ -137,7 +131,7 @@ var geselecteerdeVraag;
          $.ajax({
              cache: false,
              type: 'POST',
-             url: 'http://localhost:3000/nieuwAntwoord/' + enqueteId + "/" + geselecteerdeVraag.id,
+             url: 'http://localhost:3000/nieuwAntwoord/' + enqueteId + "/" + geselecteerdeVraagId,
              data: JSON.stringify(objectOmTeVesturen),
              success: function(data)
              {
@@ -158,15 +152,12 @@ var geselecteerdeVraag;
     $("#nieuwAntwoord").val("")
  }
 
- function kiesAntwoord(codeVanHetAntwoord)
+ function kiesAntwoord(vraagId, codeVanHetAntwoord)
  {
-    console.log("geselecteerde enquete " + enqueteId)
-    console.log("geselecteerde vraag " + geselecteerdeVraag.id)
-    console.log("geselecteerd antwoord" +  codeVanHetAntwoord)
     $.ajax({
                  cache: false,
                  type: 'POST',
-                 url: 'http://localhost:3000/kiesAntwoord/' + enqueteId + "/" + geselecteerdeVraag.id + "/" + codeVanHetAntwoord,
+                 url: 'http://localhost:3000/kiesAntwoord/' + enqueteId + "/" + vraagId + "/" + codeVanHetAntwoord,
                  success: function(data)
                  {
 

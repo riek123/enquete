@@ -1,9 +1,11 @@
 var express = require('express');
+var fs = require('fs');
 var app = express();
 var bodyParser = require('body-parser');
 var lijstEnquetes = [];
 app.use(express.static('html'));
 app.use(bodyParser.json());
+
 
 app.get('/api', function (req, res) {
    res.send(lijstEnquetes);
@@ -15,6 +17,7 @@ app.post('/api', function (req, res) {
     enquete.id = lijstEnquetes.length;
     enquete.vragenlijst = [];
     lijstEnquetes.push(enquete);
+    slaGegevensOp();
     res.end();
 });
 
@@ -34,6 +37,7 @@ app.post('/nieuweVraag/:id', function(req, res)
            vraag.antwoordenlijst = [];
             enquete.vragenlijst.push(vraag);
         })
+        slaGegevensOp();
         res.end();
     });
 
@@ -57,9 +61,11 @@ app.post('/nieuwAntwoord/:enqueteId/:vraagId', function(req, res)
             })
             .forEach(function(vraag)
             {
+                antwoord.teller = 0;
                 vraag.antwoordenlijst.push(antwoord)
             })
         })
+        slaGegevensOp();
         res.end();
     });
 app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
@@ -100,8 +106,16 @@ app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
             })
         })
     })
+    slaGegevensOp();
     res.end();
 })
 
+function slaGegevensOp()
+{
+    fs.writeFileSync("enquete.data", JSON.stringify(lijstEnquetes, null, 4))
+}
+
+var data = fs.readFileSync("enquete.data", "utf8")
+lijstEnquetes = JSON.parse(data)
 
 app.listen(3000, function() { console.log('programma is gestart');});
