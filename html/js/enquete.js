@@ -3,7 +3,7 @@ var enqueteMap={};
 var enqueteId;
 var geselecteerdeVraagId;
  function laadEnqueteLijst() {
- $.getJSON("http://localhost:3000/api", function(result){
+ $.getJSON("api", function(result){
          $("#enqueteLijst").empty();
          $.each(result, function(i, enquete){
             console.log(enquete);
@@ -25,7 +25,7 @@ var geselecteerdeVraagId;
      $.ajax({
          cache: false,
          type: 'POST',
-         url: 'http://localhost:3000/api',
+         url: 'api',
          data: JSON.stringify(objectOmTeVesturen),
          success: function(data)
          {
@@ -59,7 +59,7 @@ var geselecteerdeVraagId;
          $.ajax({
              cache: false,
              type: 'POST',
-             url: 'http://localhost:3000/nieuweVraag/' + enqueteId,
+             url: 'nieuweVraag/' + enqueteId,
              data: JSON.stringify(objectOmTeVesturen),
              success: function(data)
              {
@@ -131,7 +131,7 @@ var geselecteerdeVraagId;
          $.ajax({
              cache: false,
              type: 'POST',
-             url: 'http://localhost:3000/nieuwAntwoord/' + enqueteId + "/" + geselecteerdeVraagId,
+             url: 'nieuwAntwoord/' + enqueteId + "/" + geselecteerdeVraagId,
              data: JSON.stringify(objectOmTeVesturen),
              success: function(data)
              {
@@ -157,7 +157,7 @@ var geselecteerdeVraagId;
     $.ajax({
                  cache: false,
                  type: 'POST',
-                 url: 'http://localhost:3000/kiesAntwoord/' + enqueteId + "/" + vraagId + "/" + codeVanHetAntwoord,
+                 url: 'kiesAntwoord/' + enqueteId + "/" + vraagId + "/" + codeVanHetAntwoord,
                  success: function(data)
                  {
 
