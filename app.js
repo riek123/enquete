@@ -114,8 +114,15 @@ function slaGegevensOp()
 {
     fs.writeFileSync("enquete.data", JSON.stringify(lijstEnquetes, null, 4))
 }
+if  (fs.existsSync("enquete.data"))
+{
+    var data = fs.readFileSync("enquete.data", "utf8")
+    lijstEnquetes = JSON.parse(data)
+}
+else
+{
+    lijstEnquetes = []
+}
 
-var data = fs.readFileSync("enquete.data", "utf8")
-lijstEnquetes = JSON.parse(data)
 
 app.listen(3000, function() { console.log('programma is gestart');});
