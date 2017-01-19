@@ -18,6 +18,7 @@ body {
 }
 #enqueteTitel {
     text-align: center;
+    font-size: 80px;
 }
 .arc text {
     font: 10px sans-serif;

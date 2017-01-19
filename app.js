@@ -11,6 +11,25 @@ app.get('/api', function (req, res) {
    res.send(lijstEnquetes);
 });
 
+app.delete('/api/:id', function (req, res)
+{
+    console.log("delete is binnen");
+    console.log("id = ", req.params.id);
+    var nieuweLijstEnquetes = [];
+    lijstEnquetes
+    .filter(function(enquete)
+            {
+                return enquete.id != req.params.id;
+            })
+            .forEach(function(enquete)
+            {
+               nieuweLijstEnquetes.push(enquete);
+            })
+            lijstEnquetes = nieuweLijstEnquetes;
+            slaGegevensOp();
+    res.end();
+});
+
 app.post('/api', function (req, res) {
     console.log(req.body);
     var enquete = req.body;
