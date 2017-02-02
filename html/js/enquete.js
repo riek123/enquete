@@ -4,6 +4,7 @@ var enqueteId;
 var geselecteerdeVraagId;
  function laadEnqueteLijst() {
  $.getJSON("api", function(result){
+        enqueteMap={};
          $("#enqueteLijst").empty();
          $.each(result, function(i, enquete){
             console.log(enquete);
@@ -33,6 +34,7 @@ var geselecteerdeVraagId;
             console.log("enqueteOpgeslagen");
             $("#naamEnquete").val("")
              laadEnqueteLijst();
+            $("#enqueteOpslaanKnop").hide();
          },
          error: function(a,b,fout)
          {
@@ -54,7 +56,9 @@ var geselecteerdeVraagId;
                 $("#naamEnquete").val("")
                 $("#enqueteTitel").html("")
                 $("#verwijderKnop").hide();
-                 $("#vragenlijst").empty();
+                $("#vragenlijst").empty();
+                $("#vraagVeld").hide();
+                $("#antwoordOpslaanKnop").hide();
                  laadEnqueteLijst();
              },
              error: function(a,b,fout)
@@ -69,6 +73,8 @@ var geselecteerdeVraagId;
  {
     $("#enqueteTitel").html(enqueteMap[id].naam);
     $("#verwijderKnop").show();
+    $("#vraagVeld").show();
+    $("#vraagOpslaanKnop").hide();
     enqueteId=id;
      $("#vragenlijst").empty();
               enquete= enqueteMap[enqueteId];
@@ -90,6 +96,7 @@ var geselecteerdeVraagId;
 
                 console.log("nieuweVraagOpgeslagen");
                 $("#nieuweVraag").val("")
+                $("#vraagOpslaanKnop").hide();
                  laadEnqueteLijst();
              },
              error: function(a,b,fout)
@@ -162,6 +169,7 @@ var geselecteerdeVraagId;
 
                 console.log("nieuwAntwoordOpgeslagen");
                 $("#nieuwAntwoord").val("")
+                $("#antwoordOpslaanKnop").hide();
                  laadEnqueteLijst();
              },
              error: function(a,b,fout)
@@ -197,7 +205,8 @@ var geselecteerdeVraagId;
 }
  $(document).ready(function() {
      $('#naamEnquete').keydown(function(event) {
-         if (event.keyCode == 13) {
+          titel = $('#naamEnquete').val();
+         if (event.keyCode == 13 && titel.length > 0) {
          slaEnqueteOp()
              return false;
           }
@@ -205,8 +214,37 @@ var geselecteerdeVraagId;
  });
 
  $(document).ready(function() {
+     $('#naamEnquete').keyup(function(event) {
+     titel = $('#naamEnquete').val();
+     if (titel.length > 0)
+     {
+        $("#enqueteOpslaanKnop").show();
+     }
+     else
+     {
+        $("#enqueteOpslaanKnop").hide();
+     }
+     });
+ });
+
+$(document).ready(function() {
+     $('#nieuweVraag').keyup(function(event) {
+     vraag = $('#nieuweVraag').val();
+     if (vraag.length > 0)
+     {
+        $("#vraagOpslaanKnop").show();
+     }
+     else
+     {
+        $("#vraagOpslaanKnop").hide();
+     }
+     });
+ });
+
+ $(document).ready(function() {
            $('#nieuweVraag').keydown(function(event) {
-               if (event.keyCode == 13) {
+           vraag = $('#nieuweVraag').val();
+               if (event.keyCode == 13 && vraag.length > 0) {
                console.log("sla nieuwe vraag op")
                slaNieuweVraagOp()
                    return false;
@@ -216,13 +254,29 @@ var geselecteerdeVraagId;
 
 $(document).ready(function() {
       $('#nieuwAntwoord').keydown(function(event) {
-          if (event.keyCode == 13) {
-          slaAntwoordOp()
-          $('.modal').modal('hide');
-              return false;
-           }
-      });
-  });
+          antwoord = $('#nieuwAntwoord').val();
+            if (event.keyCode == 13 && antwoord.length > 0) {
+            slaAntwoordOp()
+            $('.modal').modal('hide');
+                return false;
+               }
+        });
+    });
+
+    $(document).ready(function() {
+         $('#nieuwAntwoord').keyup(function(event) {
+         antwoord = $('#nieuwAntwoord').val();
+         if (antwoord.length > 0)
+         {
+            $("#antwoordOpslaanKnop").show();
+         }
+         else
+         {
+            $("#antwoordOpslaanKnop").hide();
+         }
+         });
+     });
+
   $(document).ready(function() {
   $('#myModal').on('shown.bs.modal', function () {
       $('#nieuwAntwoord').focus();
@@ -230,4 +284,7 @@ $(document).ready(function() {
   })
   $(document).ready(function() {
      $("#verwijderKnop").hide();
+     $("#enqueteOpslaanKnop").hide();
+     $("#vraagVeld").hide();
+     $("#antwoordOpslaanKnop").hide();
   })

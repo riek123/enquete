@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div class="col-md-2">
-			<button class="btn btn-default" onclick="slaEnqueteOp()" type="button">Opslaan</button>
+			<button class="btn btn-default" onclick="slaEnqueteOp()" id="enqueteOpslaanKnop" type="button">Opslaan</button>
 		</div>
 		<div class="col-md-4"></div>
 	</div>
@@ -51,7 +51,7 @@
 		<div class="col-md-2"></div>
 	</div>
 	<div id="vragenlijst"></div>
-	<div class="row">
+	<div class="row" id="vraagVeld">
 		<div class="col-md-1"></div>
 		<div class="col-md-7">
 			<div>
@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<div class="col-md-3">
-			<button class="btn btn-default" onclick="slaNieuweVraagOp()" type="button">Opslaan</button>
+			<button class="btn btn-default" onclick="slaNieuweVraagOp()" id="vraagOpslaanKnop" type="button">Opslaan</button>
 		</div>
 		<div class="col-md-1"></div>
 	</div>
@@ -76,7 +76,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"  onclick="antwoordLeegmaken()">Sluiten</button>
-				<button type="button" class="btn btn-primary" onclick="slaAntwoordOp()" data-dismiss="modal">Opslaan</button>
+				<button type="button" class="btn btn-primary" onclick="slaAntwoordOp()" id="antwoordOpslaanKnop" data-dismiss="modal">Opslaan</button>
 			</div>
 		</div>
 	</div>
