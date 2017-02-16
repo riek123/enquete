@@ -1,6 +1,7 @@
 $(document).ready(laadEnqueteLijst);
 var enqueteMap={};
 var enqueteId;
+var ipAdress;
 var geselecteerdeVraagId;
  function laadEnqueteLijst() {
  $.getJSON("api", function(result){
@@ -186,10 +187,17 @@ var geselecteerdeVraagId;
 
  function kiesAntwoord(vraagId, codeVanHetAntwoord)
  {
+    var objectOmTeVesturen = {};
+             objectOmTeVesturen.ipAdress = ipAdress;
     $.ajax({
                  cache: false,
                  type: 'POST',
                  url: 'kiesAntwoord/' + enqueteId + "/" + vraagId + "/" + codeVanHetAntwoord,
+                 data: JSON.stringify(objectOmTeVesturen),
+                 headers:
+                 {
+                    "gebruikersId":""
+                 },
                  success: function(data)
                  {
 
@@ -288,3 +296,12 @@ $(document).ready(function() {
      $("#vraagVeld").hide();
      $("#antwoordOpslaanKnop").hide();
   })
+
+  $(document).ready(function ()
+  {
+    $.getJSON("http://jsonip.com", function (data)
+    {
+        console.log(data)
+        ipAdress = data.ip
+    });
+  });

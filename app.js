@@ -3,11 +3,13 @@ var fs = require('fs');
 var app = express();
 var bodyParser = require('body-parser');
 var lijstEnquetes = [];
+var ipAdressenPerVraag = {};
 app.use(express.static('html'));
 app.use(bodyParser.json());
 
 
 app.get('/api', function (req, res) {
+    console.log("request is binnengekomen %s", JSON.stringify(req.body))
    res.send(lijstEnquetes);
 });
 
@@ -90,6 +92,25 @@ app.post('/nieuwAntwoord/:enqueteId/:vraagId', function(req, res)
 app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
 {
     console.log(req.body);
+    var ipAdress = req.body.ipAdress
+    var lijstIpAdressen = ipAdressenPerVraag[req.params.enqueteId + "-" + req.params.vraagId]
+    if (lijstIpAdressen)
+    {
+        if (!lijstIpAdressen.includes(ipAdress))
+        {
+           lijstIpAdressen.push(ipAdress)
+        }
+        else
+        {
+            return;
+        }
+    }
+    else
+    {
+        lijstIpAdressen = []
+        lijstIpAdressen.push(ipAdress)
+        ipAdressenPerVraag[req.params.enqueteId + "-" + req.params.vraagId] = lijstIpAdressen
+    }
     console.log("enquete = ", req.params.enqueteId);
     console.log("vraag = ", req.params.vraagId);
     console.log("antwoord = ", req.params.antwoordCode);
