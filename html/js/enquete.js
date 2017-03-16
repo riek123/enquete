@@ -3,6 +3,7 @@ var enqueteMap={};
 var enqueteId;
 var ipAdress;
 var geselecteerdeVraagId;
+var ingelogd=false;
  function laadEnqueteLijst() {
  $.getJSON("api", function(result){
         enqueteMap={};
@@ -17,6 +18,37 @@ var geselecteerdeVraagId;
           if (enquete){
          printVragenlijst(enquete)
           }
+     });
+ }
+
+function login()
+ {
+     $.ajax({
+         cache: false,
+         type: 'POST',
+         url: 'login',
+         success: function(data)
+         {
+            console.log(data);
+            if("oke" == data)
+            {
+                ingelogd = true
+                $("#loginKnop").hide();
+                $("#naamEnquete").show();
+                $("#nieuweVraag").show();
+                $("#nieuwAntwoord").show();
+                console.log("enqueteId is", enqueteId)
+                if (typeof enqueteId != 'undefined')
+                {
+                    $("#verwijderKnop").show();
+                }
+            }
+         },
+         error: function(a,b,fout)
+         {
+            console.log("fout opgetreden", fout);
+         },
+         contentType: "application/json"
      });
  }
 
@@ -73,7 +105,10 @@ var geselecteerdeVraagId;
  function selecteerEnquete(id)
  {
     $("#enqueteTitel").html(enqueteMap[id].naam);
+    if(ingelogd)
+    {
     $("#verwijderKnop").show();
+    }
     $("#vraagVeld").show();
     $("#vraagOpslaanKnop").hide();
     enqueteId=id;
@@ -291,6 +326,9 @@ $(document).ready(function() {
   })
   })
   $(document).ready(function() {
+     $("#nieuwAntwoord").hide();
+     $("#nieuweVraag").hide();
+     $("#naamEnquete").hide();
      $("#verwijderKnop").hide();
      $("#enqueteOpslaanKnop").hide();
      $("#vraagVeld").hide();

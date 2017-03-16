@@ -1,4 +1,7 @@
 var express = require('express');
+var passport = require('passport');
+var Strategy = require('passport-http').BasicStrategy;
+var db = require('./db');
 var fs = require('fs');
 var app = express();
 var bodyParser = require('body-parser');
@@ -7,13 +10,22 @@ var ipAdressenPerVraag = {};
 app.use(express.static('html'));
 app.use(bodyParser.json());
 
+passport.use(new Strategy(
+  function(username, password, cb) {
+    db.users.findByUsername(username, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      if (user.password != password) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
 
 app.get('/api', function (req, res) {
     console.log("request is binnengekomen %s", JSON.stringify(req.body))
    res.send(lijstEnquetes);
 });
 
-app.delete('/api/:id', function (req, res)
+app.delete('/api/:id',passport.authenticate('basic', { session: false }), function (req, res)
 {
     console.log("delete is binnen");
     console.log("id = ", req.params.id);
@@ -32,7 +44,7 @@ app.delete('/api/:id', function (req, res)
     res.end();
 });
 
-app.post('/api', function (req, res) {
+app.post('/api',passport.authenticate('basic', { session: false }), function (req, res) {
     console.log(req.body);
     var enquete = req.body;
     enquete.id = lijstEnquetes.length;
@@ -42,7 +54,12 @@ app.post('/api', function (req, res) {
     res.end();
 });
 
-app.post('/nieuweVraag/:id', function(req, res)
+app.post('/login',passport.authenticate('basic', { session: false }), function (req, res) {
+    console.log("Je bent ingelogd");
+    res.end("oke");
+});
+
+app.post('/nieuweVraag/:id',passport.authenticate('basic', { session: false }), function(req, res)
     {
         console.log(req.body);
         console.log("id = ", req.params.id);
@@ -62,7 +79,7 @@ app.post('/nieuweVraag/:id', function(req, res)
         res.end();
     });
 
-app.post('/nieuwAntwoord/:enqueteId/:vraagId', function(req, res)
+app.post('/nieuwAntwoord/:enqueteId/:vraagId',passport.authenticate('basic', { session: false }), function(req, res)
     {
         console.log(req.body);
         console.log("enquete = ", req.params.enqueteId);
@@ -89,14 +106,31 @@ app.post('/nieuwAntwoord/:enqueteId/:vraagId', function(req, res)
         slaGegevensOp();
         res.end();
     });
+
+function contains(array, element)
+{
+    for(index = 0; index <= array.length-1; index++)
+    {
+        if(array[index] === element)
+        {
+            console.log("true")
+            return true;
+        }
+    }
+    console.log("false")
+    return false;
+}
+
+
 app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
 {
     console.log(req.body);
     var ipAdress = req.body.ipAdress
     var lijstIpAdressen = ipAdressenPerVraag[req.params.enqueteId + "-" + req.params.vraagId]
+    console.log("lijst is", JSON.stringify(lijstIpAdressen))
     if (lijstIpAdressen)
     {
-        if (!lijstIpAdressen.includes(ipAdress))
+        if (!contains(lijstIpAdressen, ipAdress))
         {
            lijstIpAdressen.push(ipAdress)
         }
