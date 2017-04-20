@@ -9,9 +9,8 @@ var ingelogd=false;
         enqueteMap={};
          $("#enqueteLijst").empty();
          $.each(result, function(i, enquete){
-            console.log(enquete);
-            enqueteMap[enquete.id]= enquete;
-            $("#enqueteLijst").append('<li><a href="#" onclick="selecteerEnquete(' + enquete.id + ')">' + enquete.naam + '</a></li>');
+                enqueteMap[enquete.id]= enquete;
+                $("#enqueteLijst").append(sprintf('<li><a href="#" onclick="selecteerEnquete(%s)">%s</a></li>', enquete.id, enquete.naam));
          });
          $("#vragenlijst").empty();
           enquete= enqueteMap[enqueteId];
@@ -29,7 +28,6 @@ function login()
          url: 'login',
          success: function(data)
          {
-            console.log(data);
             if("oke" == data)
             {
                 ingelogd = true
@@ -37,7 +35,6 @@ function login()
                 $("#naamEnquete").show();
                 $("#nieuweVraag").show();
                 $("#nieuwAntwoord").show();
-                console.log("enqueteId is", enqueteId)
                 if (typeof enqueteId != 'undefined')
                 {
                     $("#verwijderKnop").show();
@@ -63,8 +60,6 @@ function login()
          data: JSON.stringify(objectOmTeVesturen),
          success: function(data)
          {
-
-            console.log("enqueteOpgeslagen");
             $("#naamEnquete").val("")
              laadEnqueteLijst();
             $("#enqueteOpslaanKnop").hide();
@@ -84,8 +79,6 @@ function login()
              url: 'api/' + enqueteId,
              success: function(data)
              {
-
-                console.log("enquete verwijderd");
                 $("#naamEnquete").val("")
                 $("#enqueteTitel").html("")
                 $("#verwijderKnop").hide();
@@ -129,8 +122,6 @@ function login()
              data: JSON.stringify(objectOmTeVesturen),
              success: function(data)
              {
-
-                console.log("nieuweVraagOpgeslagen");
                 $("#nieuweVraag").val("")
                 $("#vraagOpslaanKnop").hide();
                  laadEnqueteLijst();
@@ -144,7 +135,6 @@ function login()
  }
  function selecteerVraag(id)
  {
-     console.log(JSON.stringify(enqueteMap[enqueteId]));
     $("#vraagTitel").text(enqueteMap[enqueteId].vragenlijst[id].beschrijving);
 
     geselecteerdeVraagId = id;
@@ -152,18 +142,16 @@ function login()
  function printVragenlijst(enquete)
  {
      $.each(enquete.vragenlijst, function(i, vraag){
-     // geselecteerdeVraag = vraag;
         $("#vragenlijst")
         .append('<div class="row vragen">' +
-        '<div class="col-md-1"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'' + vraag.id + '\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>' +
+        sprintf('<div class="col-md-1"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'%s\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>', vraag.id) +
         '<h5 class="col-md-5">' +
         vraag.beschrijving +
         '</h5>' +
         printAntwoorden(vraag.id, vraag.antwoordenlijst) +
-        '<div class="col-md-3" style="height: 125px; width: 100px; margin-top: -35px" id="diagram-' + enquete.id + '-' + vraag.id + '"></div>' +
+        sprintf('<div class="col-md-3" style="height: 125px; width: 100px; margin-top: -35px" id="diagram-%s-%s"></div>', enquete.id, vraag.id) +
         '</div>')
-        id="#diagram-" + enquete.id + "-" + vraag.id;
-                console.log("hallo",id)
+        id=sprintf("#diagram-%s-%s",enquete.id, vraag.id);
                 data = vulWaarden(vraag.antwoordenlijst)
                 taartdiagram(id, data)
         })
@@ -184,7 +172,7 @@ function login()
         {
             antwoord.teller = 0
         }
-        var antwoordKnop = '<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="kiesAntwoord(\''+ vraagId + '\',\'' + antwoord.code + '\')" type="button">' + antwoord.beschrijving + ' (' + antwoord.teller + ')</button>'
+        var antwoordKnop = sprintf('<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="kiesAntwoord(\'%s\',\'%s\')" type="button">%s(%s)</button>', vraagId, antwoord.code, antwoord.beschrijving, antwoord.teller)
     alleKnoppen = alleKnoppen + antwoordKnop;
     })
     return alleKnoppen
@@ -194,16 +182,13 @@ function login()
         var objectOmTeVesturen = {};
          objectOmTeVesturen.beschrijving = $('#nieuwAntwoord').val();
          objectOmTeVesturen.code = $('#nieuwAntwoord').val();
-        console.log("aan het opslaan");
          $.ajax({
              cache: false,
              type: 'POST',
-             url: 'nieuwAntwoord/' + enqueteId + "/" + geselecteerdeVraagId,
+             url: sprintf('nieuwAntwoord/%s/%s', enqueteId, geselecteerdeVraagId),
              data: JSON.stringify(objectOmTeVesturen),
              success: function(data)
              {
-
-                console.log("nieuwAntwoordOpgeslagen");
                 $("#nieuwAntwoord").val("")
                 $("#antwoordOpslaanKnop").hide();
                  laadEnqueteLijst();
@@ -227,7 +212,7 @@ function login()
     $.ajax({
                  cache: false,
                  type: 'POST',
-                 url: 'kiesAntwoord/' + enqueteId + "/" + vraagId + "/" + codeVanHetAntwoord,
+                 url: sprintf('kiesAntwoord/%s/%s/%s', enqueteId, vraagId, codeVanHetAntwoord),
                  data: JSON.stringify(objectOmTeVesturen),
                  headers:
                  {
@@ -235,8 +220,6 @@ function login()
                  },
                  success: function(data)
                  {
-
-                    console.log("nieuwAntwoordGekozen");
                      laadEnqueteLijst();
                  },
                  error: function(a,b,fout)
@@ -288,7 +271,6 @@ $(document).ready(function() {
            $('#nieuweVraag').keydown(function(event) {
            vraag = $('#nieuweVraag').val();
                if (event.keyCode == 13 && vraag.length > 0) {
-               console.log("sla nieuwe vraag op")
                slaNieuweVraagOp()
                    return false;
                 }
@@ -339,7 +321,6 @@ $(document).ready(function() {
   {
     $.getJSON("http://jsonip.com", function (data)
     {
-        console.log(data)
         ipAdress = data.ip
     });
   });

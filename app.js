@@ -28,7 +28,19 @@ app.get('/api', function (req, res) {
 app.delete('/api/:id',passport.authenticate('basic', { session: false }), function (req, res)
 {
     console.log("delete is binnen");
+    console.log(Object.keys(ipAdressenPerVraag));
     console.log("id = ", req.params.id);
+    var keys = Object.keys(ipAdressenPerVraag);
+    keys.filter(function(key)
+    {
+        var index = key.indexOf("-")
+        var begin = key.substring(0, index)
+        return begin == req.params.id
+    })
+    .forEach(function(key)
+    {
+        ipAdressenPerVraag[key] = []
+    })
     var nieuweLijstEnquetes = [];
     lijstEnquetes
     .filter(function(enquete)
@@ -124,6 +136,7 @@ function contains(array, element)
 
 app.post("/kiesAntwoord/:enqueteId/:vraagId/:antwoordCode" , function(req, res)
 {
+    console.log("ipAdressenPerVraag is ", JSON.stringify(ipAdressenPerVraag))
     console.log(req.body);
     var ipAdress = req.body.ipAdress
     var lijstIpAdressen = ipAdressenPerVraag[req.params.enqueteId + "-" + req.params.vraagId]
