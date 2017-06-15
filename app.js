@@ -61,7 +61,7 @@ app.post('/api',passport.authenticate('basic', { session: false }), function (re
     var enquete = req.body;
     enquete.id = lijstEnquetes.length;
     enquete.vragenlijst = [];
-    lijstEnquetes.push(enquete);
+    lijstEnquetes.unshift(enquete);
     slaGegevensOp();
     res.end();
 });
@@ -97,6 +97,8 @@ app.post('/nieuwAntwoord/:enqueteId/:vraagId',passport.authenticate('basic', { s
         console.log("enquete = ", req.params.enqueteId);
         console.log("vraag = ", req.params.vraagId);
         var antwoord = req.body;
+        antwoord.beschrijving = antwoord.beschrijving
+                .replace(/'/g, "\'");
         lijstEnquetes
         .filter(function(enquete)
         {

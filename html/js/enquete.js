@@ -4,6 +4,7 @@ var enqueteId;
 var ipAdress;
 var geselecteerdeVraagId;
 var ingelogd=false;
+
  function laadEnqueteLijst() {
  $.getJSON("api", function(result){
         enqueteMap={};
@@ -16,6 +17,10 @@ var ingelogd=false;
           enquete= enqueteMap[enqueteId];
           if (enquete){
          printVragenlijst(enquete)
+          }
+          if(result.length > 0)
+          {
+            selecteerEnquete(result[0].id);
           }
      });
  }
@@ -31,6 +36,7 @@ function login()
             if("oke" == data)
             {
                 ingelogd = true
+                $(".plusKnop").show();
                 $("#loginKnop").hide();
                 $("#naamEnquete").show();
                 $("#nieuweVraag").show();
@@ -143,24 +149,30 @@ function login()
  {
      $.each(enquete.vragenlijst, function(i, vraag){
         $("#vragenlijst")
-        .append('<div class="row vragen">' +
-        sprintf('<div class="col-md-1"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'%s\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>', vraag.id) +
-        '<h5 class="col-md-5">' +
+        .append('<div style="background-color: rgb(242,242,242); padding: 10px; margin-bottom: 5px"><div class="row vragen">' +
+        sprintf('<div class="col-md-1 plusKnop"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'%s\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>', vraag.id) +
+        '<h3 class="col-md-11" style="margin-top: 0px">' +
         vraag.beschrijving +
-        '</h5>' +
+        '</h3> </div>' +
         printAntwoorden(vraag.id, vraag.antwoordenlijst) +
-        sprintf('<div class="col-md-3" style="height: 125px; width: 100px; margin-top: -35px" id="diagram-%s-%s"></div>', enquete.id, vraag.id) +
-        '</div>')
+        sprintf('<div class="row"><div class="col-md-12" style="height: 125px; width: 100px" id="diagram-%s-%s"></div></div></div>', enquete.id, vraag.id))
         id=sprintf("#diagram-%s-%s",enquete.id, vraag.id);
                 data = vulWaarden(vraag.antwoordenlijst)
-                taartdiagram(id, data)
+                taartdiagram(id, data);
+                if(ingelogd == false)
+                {
+                    $( ".plusKnop" ).hide()
+                }
         })
  }
  function vulWaarden(antwoordenlijst)
  {
     data=[]
     $.each(antwoordenlijst, function(i, antwoord){
+        if(antwoord.teller > 0)
+        {
         data.push ({"label":antwoord.beschrijving, "value":antwoord.teller})
+        }
         })
         return data;
  }
@@ -172,7 +184,7 @@ function login()
         {
             antwoord.teller = 0
         }
-        var antwoordKnop = sprintf('<button class="btn btn-primary col-md-1 btn-sm antwoorden" onclick="kiesAntwoord(\'%s\',\'%s\')" type="button">%s(%s)</button>', vraagId, antwoord.code, antwoord.beschrijving, antwoord.teller)
+        var antwoordKnop = sprintf('<div class="row" style="margin-bottom: 10px"> <span class="col-md-1"></span> <div class="col-md-1"> <button class="btn btn-primary btn-link antwoorden" style="margin: 0" onclick="kiesAntwoord(\'%s\',\'%s\')" type="button"> <span class="glyphicon glyphicon-ok"></span> </button> </div> <h4 class="col-md-10" style="margin-top: 7px"> %s(%s)</h4></div>', vraagId, antwoord.code, antwoord.beschrijving, antwoord.teller)
     alleKnoppen = alleKnoppen + antwoordKnop;
     })
     return alleKnoppen
