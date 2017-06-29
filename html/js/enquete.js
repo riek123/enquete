@@ -11,16 +11,19 @@ var ingelogd=false;
          $("#enqueteLijst").empty();
          $.each(result, function(i, enquete){
                 enqueteMap[enquete.id]= enquete;
-                $("#enqueteLijst").append(sprintf('<li><a href="#" onclick="selecteerEnquete(%s)">%s</a></li>', enquete.id, enquete.naam));
+                $("#enqueteLijst").append(sprintf('<a href="#" onclick="selecteerEnquete(%s)" class="list-group-item list-group-item-action">%s</a>', enquete.id, enquete.naam));
          });
          $("#vragenlijst").empty();
           enquete= enqueteMap[enqueteId];
           if (enquete){
          printVragenlijst(enquete)
           }
-          if(result.length > 0)
+          if(typeof enqueteId == 'undefined')
           {
-            selecteerEnquete(result[0].id);
+            if(result.length > 0)
+            {
+                selecteerEnquete(result[0].id);
+            }
           }
      });
  }
@@ -149,13 +152,14 @@ function login()
  {
      $.each(enquete.vragenlijst, function(i, vraag){
         $("#vragenlijst")
-        .append('<div style="background-color: rgb(242,242,242); padding: 10px; margin-bottom: 5px"><div class="row vragen">' +
+        .append('<div style="background-color: rgb(242,242,242); padding: 10px; margin-bottom: 5px"><div class="row"><div class="col-md-8"><div class="row vragen">' +
         sprintf('<div class="col-md-1 plusKnop"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="selecteerVraag(\'%s\')"> <span class="glyphicon glyphicon-plus"></span> </button></div>', vraag.id) +
         '<h3 class="col-md-11" style="margin-top: 0px">' +
         vraag.beschrijving +
         '</h3> </div>' +
         printAntwoorden(vraag.id, vraag.antwoordenlijst) +
-        sprintf('<div class="row"><div class="col-md-12" style="height: 125px; width: 100px" id="diagram-%s-%s"></div></div></div>', enquete.id, vraag.id))
+        '</div>' +
+        sprintf('<div class="col-md-4" style="text-align: right; padding-top: 10px; padding-right: 25px" id="diagram-%s-%s"></div></div></div>', enquete.id, vraag.id))
         id=sprintf("#diagram-%s-%s",enquete.id, vraag.id);
                 data = vulWaarden(vraag.antwoordenlijst)
                 taartdiagram(id, data);

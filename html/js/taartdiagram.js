@@ -1,8 +1,8 @@
 function taartdiagram (id, data)
 {
-    var w = 100,                        //width
-            h = 100,                            //height
-            r = 50,                            //radius
+    var w = 200,                        //width
+            h = 200,                            //height
+            r = 100,                            //radius
             color = d3.scale.category20c();     //builtin range of colors
 
     var vis = d3.select(id)
